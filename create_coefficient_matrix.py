@@ -22,6 +22,17 @@ def mt_to_int(military_time):
     return time
 
 
+# receives starting time of a shift in the range 0 - 23 and returns type of shift
+def determine_type_of_shift(shift_start, shift_length):
+
+    if (7 - shift_length / 2) < shift_start <= (7 + shift_length / 2):
+        return "DAY"
+    elif (15 - shift_length / 2) < shift_start <= (15 + shift_length / 2):
+        return "EVE"
+    else:
+        return "MID"
+
+
 # returns the previous day
 def previous(day):
     if day == "SUN":
@@ -72,9 +83,7 @@ def create_coefficient_matrix_dataframe(daily_average_df, shift_length):
     days = daily_average_df.index.values
     time_windows = daily_average_df.columns
 
-    shift_length = 8
-
-    shifts_mt = ["2300", "0000", "0600", "0700", "0800", "1300", "1500", "1600"]
+    shifts_mt = []
     columns = {'day_of_week': [], 'time_window': []}
     shifts = {}
 
@@ -82,6 +91,7 @@ def create_coefficient_matrix_dataframe(daily_average_df, shift_length):
         for time_window in time_windows:
             columns['day_of_week'].append(day)
             columns['time_window'].append(time_window)
+            shifts_mt.append(time_window)
 
     for day in days:
         for shift_mt in shifts_mt:
